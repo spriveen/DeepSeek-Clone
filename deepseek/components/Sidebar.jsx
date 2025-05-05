@@ -1,16 +1,14 @@
-import { assets } from '@/assets/assets';
+import { assets } from '@/assets/assets'; 
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react'; // ✅ Fixed here
 import { useClerk, UserButton } from '@clerk/nextjs';
 import { useAppContext } from '@/context/AppContext';
 import ChatLabel from './ChatLabel';
 
 const Sidebar = ({ expand, setExpand }) => {
-
-  const {openSignIn} = useClerk()
-  const {user} = useAppContext()
- 
-
+  const { openSignIn } = useClerk();
+  const { user } = useAppContext();
+  const [openMenu, setOpenMenu] = useState({ id: 0, open: false });
 
   return (
     <div
@@ -85,7 +83,7 @@ const Sidebar = ({ expand, setExpand }) => {
         {/* Recent Section */}
         <div className={`mt-8 text-white/25 text-sm ${expand ? 'block' : 'hidden'}`}>
           <p className='my-1'>Recent</p>
-          <ChatLabel />
+          <ChatLabel openMenu={openMenu} setOopenMenu={setOpenMenu} />
         </div>
       </div>
 
@@ -125,18 +123,21 @@ const Sidebar = ({ expand, setExpand }) => {
           )}
         </div>
 
-     <div onClick={user ? null : openSignIn}
-     
-     className={`flex items-center ${expand ? 'hover:bg-white/10 rounded-lg':
-    'justify-center w-full'} gap-3 text-white/60 text-sm p-2 mt-2 cursor-pointer`}>
-      {
-        user ? <UserButton/>
-        :<Image src={assets.profile_icon} alt='' className='w-7' />
-      }
-      
-      {expand && <span>My Profile</span>}
-     </div>
+        {/* Profile or Sign in */}
+        <div
+          onClick={user ? null : openSignIn}
+          className={`flex items-center ${
+            expand ? 'hover:bg-white/10 rounded-lg' : 'justify-center w-full'
+          } gap-3 text-white/60 text-sm p-2 mt-2 cursor-pointer`}
+        >
+          {user ? (
+            <UserButton />
+          ) : (
+            <Image src={assets.profile_icon} alt='' className='w-7' />
+          )}
 
+          {expand && <span>My Profile</span>}
+        </div>
       </div>
     </div>
   );
